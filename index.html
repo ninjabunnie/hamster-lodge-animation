@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Unity WebGL Player | Hamster Lodge v3</title>
+  </head>
+  <body style="text-align: center; padding: 0; border: 0; margin: 0;">
+    <div class="container" style="position: relative; padding: 0; margin: 0; width: 100%; height: 100%;">
+      <video id="video" autoplay playsinline width=960 height=600 style="width: 960px; height: 600px; position: absolute; top: 0; left: 0;"></video>
+      <canvas id="unity-canvas" width=960 height=600 tabindex="-1" style="width: 960px; height: 600px; background: transparent; position: absolute; top: 0 !important; left: 0 !important;"></canvas>
+    </div>
+    <script>
+    void function() {
+        const video = document.getElementById("video")
+
+        function handleSuccess(stream) {
+            video.srcObject = stream;
+        }
+
+        function handleError(error) {
+            switch (error.name) {
+                case 'ConstraintNotSatisfiedError':
+                    console.error(`The resolution of ${video.width.exact}x${video.height.exact} px is not supported by your device.`);
+                case 'PermissionDeniedError':
+                    console.error(`Permissions have not been granted to use your camera and microphone, you need to allow the page acontextess to your devices.`);
+                default:
+                    console.error(`getUserMedia error: ${error.name}`);
+            }
+        }
+
+        function init(e) {
+            navigator.mediaDevices
+                .getUserMedia({
+                    audio: false,
+                    video: true
+                })
+                .then(handleSuccess)
+                .catch(handleError)
+        }
+
+        window.addEventListener("load", () => {
+            init()
+        });
+    }();
+    </script>
+    <script src="Build/Test Animation 4.loader.js"></script>
+    <script>
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        // Mobile device style: fill the whole browser client area with the game canvas:
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+        document.getElementsByTagName('head')[0].appendChild(meta);
+
+        var canvas = document.querySelector("#unity-canvas");
+        canvas.style.width = "100%";
+        canvas.style.height = "100%";
+        canvas.style.position = "fixed";
+
+        document.body.style.textAlign = "left";
+      }
+
+      createUnityInstance(document.querySelector("#unity-canvas"), {
+        dataUrl: "Build/Test Animation 4.data",
+        frameworkUrl: "Build/Test Animation 4.framework.js",
+        codeUrl: "Build/Test Animation 4.wasm",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "DefaultCompany",
+        productName: "Hamster Lodge v3",
+        productVersion: "1.0.2",
+        // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
+        // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
+      });
+    </script>
+  </body>
+</html>
